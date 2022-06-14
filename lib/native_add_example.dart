@@ -1,5 +1,7 @@
 // ignore_for_file: avoid_print, avoid_unnecessary_containers, prefer_const_constructors
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
@@ -14,14 +16,16 @@ class NativeAddScreen extends StatefulWidget {
 }
 
 class _NativeAddScreenState extends State<NativeAddScreen> {
-
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     print('this is init state');
-    loadAdds();
+    scheduleMicrotask(() {
+      loadAdds();
+    });
   }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -34,7 +38,6 @@ class _NativeAddScreenState extends State<NativeAddScreen> {
                     // print('This is ad ${}');
                     if (adVm.tileDataWithAds[index] is String) {
                       return ListTile(
-
                         title: Text(adVm.tileDataWithAds[index].toString()),
                       );
                     } else {
@@ -48,8 +51,8 @@ class _NativeAddScreenState extends State<NativeAddScreen> {
                       return adVm.isAdLoaded
                           ? adContent
                           : Center(
-                        child: CircularProgressIndicator(),
-                      );
+                              child: CircularProgressIndicator(),
+                            );
                     }
                   }));
         },
@@ -58,8 +61,9 @@ class _NativeAddScreenState extends State<NativeAddScreen> {
   }
 
   void loadAdds() async {
-    await Provider.of<AdMobHelper>(context, listen: false).laodNativeAdAndList();
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(Duration(seconds: 4)).whenComplete(() async => {
+          await Provider.of<AdMobHelper>(context, listen: false).loadNativeAdAndList(),
+        });
+    // await Future.delayed(Duration(seconds: 2));
   }
-
 }

@@ -5,9 +5,9 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
-class AdMobHelper extends ChangeNotifier{
+class AdMobHelper extends ChangeNotifier {
   static String get nativeUnit => 'ca-app-pub-1448876594370491~4335758265';
-    bool isAdLoaded = false;
+  bool isAdLoaded = false;
   late NativeAd nativeAd;
   List<String> listTileData = [];
   List<Object> tileDataWithAds = [];
@@ -19,7 +19,7 @@ class AdMobHelper extends ChangeNotifier{
     }
   }
 
-   NativeAd getNativeAd() {
+  NativeAd getNativeAd() {
     NativeAd nativeAd = NativeAd(
         factoryId: "listTile",
         adUnitId: NativeAd.testAdUnitId,
@@ -29,16 +29,16 @@ class AdMobHelper extends ChangeNotifier{
           isAdLoaded = true;
           notifyListeners();
         }, onAdFailedToLoad: (ad, error) {
-           ad.dispose();
+          ad.dispose();
           print('This is error while loading $error');
         }));
     nativeAd.load();
     return nativeAd;
   }
 
-
-  Future laodNativeAdAndList() async {
-       for (int i = 0; i <= 20; i++) {
+  Future loadNativeAdAndList() async {
+    listTileData.clear();
+    for (int i = 0; i <= 20; i++) {
       listTileData.add('List item $i');
     }
     tileDataWithAds = List.from(listTileData);
@@ -46,10 +46,8 @@ class AdMobHelper extends ChangeNotifier{
       var minimumNumber = 1;
       var randomNumber = Random();
       var randomNoForAd = minimumNumber + randomNumber.nextInt(20);
-      tileDataWithAds.insert(randomNoForAd, getNativeAd()..load());
+      tileDataWithAds.insert(randomNoForAd, getNativeAd());
     }
     notifyListeners();
   }
-
-
 }
